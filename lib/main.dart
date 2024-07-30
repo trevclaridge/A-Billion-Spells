@@ -1,11 +1,19 @@
+import 'package:a_billion_spells/database_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'a_billion_spells_algo.dart' as algo;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
+  DatabaseService().searchSpellsByTag(["infect", "thunder"]);
 }
 
 class MyApp extends StatelessWidget {
@@ -43,7 +51,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: TextStyle(
+            fontSize: 30.0,
+            fontFamily: GoogleFonts.eduVicWaNtBeginner().fontFamily,
+          ),
+        ),
       ),
       body: Form(
         key: formKey,
@@ -148,9 +162,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               'Submitting your spell, ${nameController.text}!'),
                         ),
                       );
+                      DatabaseService().addSpell(generateSpellJSON());
                     }
                   },
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                 )
               ],
             ),
@@ -160,12 +175,17 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  String generateSpellJSON() {
+  Map<String, dynamic> generateSpellJSON() {
+    Map<String, bool> tagMap = {};
+    for (var tag in tags) {
+      tagMap[tag] = true;
+    }
     var jsonMap = {
       'name': nameController.text,
       'description': descriptionController.text,
-      'tags': tags
+      'createdOn': Timestamp.now(),
+      'tags': tagMap
     };
-    return jsonMap.toString();
+    return jsonMap;
   }
 }
