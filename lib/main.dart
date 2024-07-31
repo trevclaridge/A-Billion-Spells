@@ -187,22 +187,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
                       DatabaseService().addSpell(generateSpellJSON());
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                            'Submitting your spell ${nameController.text}!'),
-                      ));
-                      // print(spellId);
-                      // if (spellId != null) {
-                      //   Spell? spell = DatabaseService().getSpellById(spellId);
-                      //   if (spell != null) {
-                      //     MaterialPageRoute(
-                      //       builder: (context) => SpellPage(
-                      //         spell: spell,
-                      //         spellId: spellId,
-                      //       ),
-                      //     );
-                      //   }
-                      // }
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              'Submitting your spell ${nameController.text}!'),
+                        ),
+                      );
                     }
                   },
                   child: const Text('Submit'),
