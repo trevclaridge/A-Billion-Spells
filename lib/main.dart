@@ -1,10 +1,20 @@
+import 'package:a_billion_spells/database_service.dart';
+import 'package:a_billion_spells/spell.dart';
+import 'package:a_billion_spells/spell_page.dart';
+import 'package:a_billion_spells/spell_search_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'a_billion_spells_algo.dart' as algo;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -14,10 +24,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'A Billion Spells!',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
-        useMaterial3: true,
+        useMaterial3: false,
       ),
       home: const MyHomePage(title: 'A Billion Spells!'),
     );
@@ -42,8 +53,43 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text(widget.title),
+        backgroundColor: Theme.of(context).canvasColor,
+        foregroundColor: Colors.black,
+        elevation: 0,
+        actions: [
+          Row(
+            children: [
+              Text(
+                'Peruse the Spell Vault!   ===> ',
+                style: TextStyle(
+                  fontFamily: GoogleFonts.abel().fontFamily,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const SpellSearchPage(),
+                    ),
+                  );
+                },
+                child: const FaIcon(FontAwesomeIcons.book),
+              ),
+              const SizedBox(
+                width: 20.0,
+              ),
+            ],
+          )
+        ],
+        title: Text(
+          widget.title,
+          style: TextStyle(
+            fontSize: 30.0,
+            fontFamily: GoogleFonts.eduVicWaNtBeginner().fontFamily,
+          ),
+        ),
       ),
       body: Form(
         key: formKey,
@@ -142,15 +188,26 @@ class _MyHomePageState extends State<MyHomePage> {
                 ElevatedButton(
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                              'Submitting your spell, ${nameController.text}!'),
-                        ),
-                      );
+                      DatabaseService().addSpell(generateSpellJSON());
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            'Submitting your spell ${nameController.text}!'),
+                      ));
+                      // print(spellId);
+                      // if (spellId != null) {
+                      //   Spell? spell = DatabaseService().getSpellById(spellId);
+                      //   if (spell != null) {
+                      //     MaterialPageRoute(
+                      //       builder: (context) => SpellPage(
+                      //         spell: spell,
+                      //         spellId: spellId,
+                      //       ),
+                      //     );
+                      //   }
+                      // }
                     }
                   },
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                 )
               ],
             ),
@@ -160,12 +217,17 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  String generateSpellJSON() {
+  Map<String, dynamic> generateSpellJSON() {
+    Map<String, bool> tagMap = {};
+    for (var tag in tags) {
+      tagMap[tag] = true;
+    }
     var jsonMap = {
       'name': nameController.text,
       'description': descriptionController.text,
-      'tags': tags
+      'createdDate': Timestamp.now(),
+      'tags': tagMap
     };
-    return jsonMap.toString();
+    return jsonMap;
   }
 }

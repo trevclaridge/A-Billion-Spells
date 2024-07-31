@@ -1,12 +1,12 @@
 import "dart:math";
-import "domains.dart";
-import "subjects.dart";
-import "techniques.dart";
-import "qualities.dart";
-import "effects.dart";
-import "elements.dart";
-import "forms.dart";
-import "spell_formulae.dart";
+import "bin/domains.dart";
+import "bin/subjects.dart";
+import "bin/techniques.dart";
+import "bin/qualities.dart";
+import "bin/effects.dart";
+import "bin/elements.dart";
+import "bin/forms.dart";
+import "bin/spell_formulae.dart";
 
 extension RandomListItem<T> on List<T> {
   T randomItem() {
@@ -57,4 +57,8 @@ String getKnaveSpell() {
   }
 
   return result;
+}
+
+List<String> fullTagList() {
+  return techniques + domains + subjects;
 }
