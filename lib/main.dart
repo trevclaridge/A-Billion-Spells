@@ -1,6 +1,4 @@
 import 'package:a_billion_spells/database_service.dart';
-import 'package:a_billion_spells/spell.dart';
-import 'package:a_billion_spells/spell_page.dart';
 import 'package:a_billion_spells/spell_search_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';

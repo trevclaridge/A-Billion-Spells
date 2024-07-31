@@ -94,7 +94,7 @@ class _SpellSearchPageState extends State<SpellSearchPage> {
                       });
                     }
                   },
-                  viewTrailing: [],
+                  viewTrailing: const [],
                 ),
                 const SizedBox(height: 20.0),
                 Wrap(spacing: 10.0, children: _getTagChips()),
@@ -127,8 +127,8 @@ class _SpellSearchPageState extends State<SpellSearchPage> {
     for (var tag in tagFilter) {
       Chip chip = Chip(
         padding: EdgeInsets.zero,
-        label: Text(tag, style: TextStyle(fontSize: 20.0)),
-        deleteIcon: Icon(Icons.close),
+        label: Text(tag, style: const TextStyle(fontSize: 20.0)),
+        deleteIcon: const Icon(Icons.close),
         deleteButtonTooltipMessage: 'Remove',
         onDeleted: () {
           setState(() {
