@@ -1,4 +1,7 @@
 import 'package:a_billion_spells/database_service.dart';
+import 'package:a_billion_spells/spell.dart';
+import 'package:a_billion_spells/spell_page.dart';
+import 'package:a_billion_spells/spell_search_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
@@ -13,7 +16,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
-  DatabaseService().searchSpellsByTag(["infect", "thunder"]);
 }
 
 class MyApp extends StatelessWidget {
@@ -22,10 +24,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'A Billion Spells!',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
-        useMaterial3: true,
+        useMaterial3: false,
       ),
       home: const MyHomePage(title: 'A Billion Spells!'),
     );
@@ -50,7 +53,36 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Theme.of(context).canvasColor,
+        foregroundColor: Colors.black,
+        elevation: 0,
+        actions: [
+          Row(
+            children: [
+              Text(
+                'Peruse the Spell Vault!   ===> ',
+                style: TextStyle(
+                  fontFamily: GoogleFonts.abel().fontFamily,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const SpellSearchPage(),
+                    ),
+                  );
+                },
+                child: const FaIcon(FontAwesomeIcons.book),
+              ),
+              const SizedBox(
+                width: 20.0,
+              ),
+            ],
+          )
+        ],
         title: Text(
           widget.title,
           style: TextStyle(
@@ -156,13 +188,23 @@ class _MyHomePageState extends State<MyHomePage> {
                 ElevatedButton(
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                              'Submitting your spell, ${nameController.text}!'),
-                        ),
-                      );
                       DatabaseService().addSpell(generateSpellJSON());
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            'Submitting your spell ${nameController.text}!'),
+                      ));
+                      // print(spellId);
+                      // if (spellId != null) {
+                      //   Spell? spell = DatabaseService().getSpellById(spellId);
+                      //   if (spell != null) {
+                      //     MaterialPageRoute(
+                      //       builder: (context) => SpellPage(
+                      //         spell: spell,
+                      //         spellId: spellId,
+                      //       ),
+                      //     );
+                      //   }
+                      // }
                     }
                   },
                   child: const Text('Submit'),
@@ -183,7 +225,7 @@ class _MyHomePageState extends State<MyHomePage> {
     var jsonMap = {
       'name': nameController.text,
       'description': descriptionController.text,
-      'createdOn': Timestamp.now(),
+      'createdDate': Timestamp.now(),
       'tags': tagMap
     };
     return jsonMap;

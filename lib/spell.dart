@@ -16,9 +16,19 @@ class Spell {
     name = json["name"] as String;
     description = json["description"] as String;
     createdDate = json["createdDate"] as Timestamp;
-    var incomingTags = json["tags"] as Map<String, bool>;
+    var incomingTags = json["tags"] as Map<String, dynamic>;
+    tags = [];
     for (var tag in incomingTags.keys) {
       tags.add(tag);
     }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "name": name,
+      "description": description,
+      "createdDate": createdDate,
+      "tags": tags
+    };
   }
 }

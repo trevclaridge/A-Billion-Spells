@@ -58,3 +58,7 @@ String getKnaveSpell() {
 
   return result;
 }
+
+List<String> fullTagList() {
+  return techniques + domains + subjects;
+}
