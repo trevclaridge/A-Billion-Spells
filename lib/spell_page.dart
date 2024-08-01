@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'spell.dart';
 
@@ -33,7 +34,7 @@ class _SpellPageState extends State<SpellPage> {
         child: Column(
           children: <Widget>[
             const SizedBox(height: 40.0),
-            Text(
+            SelectableText(
               widget.spell.name,
               style: TextStyle(
                   fontSize: 28.0,
@@ -46,7 +47,7 @@ class _SpellPageState extends State<SpellPage> {
                 widget.spell.tags.length,
                 (int index) => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(
+                  child: SelectableText(
                     widget.spell.tags[index],
                     style: TextStyle(
                       fontSize: 20.0,
@@ -67,7 +68,7 @@ class _SpellPageState extends State<SpellPage> {
             const SizedBox(height: 20.0),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
-              child: Text(
+              child: SelectableText(
                 widget.spell.description,
                 style: const TextStyle(fontSize: 20.0),
               ),
