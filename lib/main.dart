@@ -211,8 +211,8 @@ class _MyHomePageState extends State<MyHomePage> {
       tagMap[tag] = true;
     }
     var jsonMap = {
-      'name': nameController.text,
-      'description': descriptionController.text,
+      'name': nameController.text.trim(),
+      'description': descriptionController.text.trim(),
       'createdDate': Timestamp.now(),
       'tags': tagMap
     };
