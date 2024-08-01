@@ -24,11 +24,15 @@ class Spell {
   }
 
   Map<String, dynamic> toJson() {
+    var tagMap = {};
+    for (var tag in tags) {
+      tagMap[tag] = true;
+    }
     return {
       "name": name,
       "description": description,
       "createdDate": createdDate,
-      "tags": tags
+      "tags": tagMap
     };
   }
 }
