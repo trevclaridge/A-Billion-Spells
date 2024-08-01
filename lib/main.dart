@@ -1,4 +1,6 @@
 import 'package:a_billion_spells/database_service.dart';
+import 'package:a_billion_spells/spell.dart';
+import 'package:a_billion_spells/spell_page.dart';
 import 'package:a_billion_spells/spell_search_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -184,13 +186,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 const SizedBox(height: 30.0),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (formKey.currentState!.validate()) {
-                      DatabaseService().addSpell(generateSpellJSON());
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                              'Submitting your spell ${nameController.text}!'),
+                      var spellId =
+                          await DatabaseService().addSpell(generateSpell());
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => SpellPage(
+                            spellId: spellId,
+                          ),
                         ),
                       );
                     }
@@ -205,7 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Map<String, dynamic> generateSpellJSON() {
+  Spell generateSpell() {
     Map<String, bool> tagMap = {};
     for (var tag in tags) {
       tagMap[tag] = true;
@@ -216,6 +221,6 @@ class _MyHomePageState extends State<MyHomePage> {
       'createdDate': Timestamp.now(),
       'tags': tagMap
     };
-    return jsonMap;
+    return Spell.fromJson(jsonMap);
   }
 }

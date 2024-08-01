@@ -17,17 +17,23 @@ class DatabaseService {
     return query.snapshots();
   }
 
-  void addSpell(Map<String, dynamic> spell) {
-    _firestoreInstance.collection(spellsCollectionReference).add(spell);
+  Future<String> addSpell(Spell spell) async {
+    var docRef = await _firestoreInstance
+        .collection(spellsCollectionReference)
+        .add(spell.toJson());
+    return docRef.id;
   }
 
-  Spell? getSpellById(String id) {
-    _firestoreInstance.doc(id).get().then((DocumentSnapshot doc) {
-      final data = doc.data() as Map<String, dynamic>;
-      return Spell.fromJson(data);
-    }, onError: (e) {
-      debugPrint("Error getting document: $e");
-    });
+  Future<Spell?> getSpellById(String id) async {
+    try {
+      var spellDoc = await _firestoreInstance
+          .collection(spellsCollectionReference)
+          .doc(id)
+          .get();
+      return Spell.fromJson(spellDoc.data()!);
+    } on Exception catch (e) {
+      debugPrint('Failed to retrive spell with message \'$e.\'');
+    }
     return null;
   }
 }

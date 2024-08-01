@@ -180,7 +180,6 @@ class _SpellSearchPageState extends State<SpellSearchPage> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => SpellPage(
-                          spell: spell,
                           spellId: spellId,
                         ),
                       ),
