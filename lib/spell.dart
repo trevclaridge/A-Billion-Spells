@@ -2,18 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Spell {
   late String name;
+  late String nameInsensative;
   late String description;
   late Timestamp createdDate;
   late List<String> tags;
 
   Spell(
       {required this.name,
+      required this.nameInsensative,
       required this.description,
       required this.createdDate,
       required this.tags});
 
   Spell.fromJson(Map<String, dynamic> json) {
     name = json["name"] as String;
+    nameInsensative = json["nameInsensative"] as String;
     description = json["description"] as String;
     createdDate = json["createdDate"] as Timestamp;
     var incomingTags = json["tags"] as Map<String, dynamic>;
@@ -30,6 +33,7 @@ class Spell {
     }
     return {
       "name": name,
+      "nameInsensative": nameInsensative,
       "description": description,
       "createdDate": createdDate,
       "tags": tagMap

@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  bool nameAlreadyExists = false;
+  bool nameAlreadyExists = true;
 
   @override
   Widget build(BuildContext context) {
@@ -158,13 +158,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a name for the spell!';
                     }
-                    checkSpellNameExists(value);
+                    checkSpellNameExists(
+                        value.trim().toLowerCase().toUpperCase().toLowerCase());
                     if (nameAlreadyExists) {
                       return 'A spell with this name already exists!';
                     }
                     return null;
                   },
-                  onChanged: (value) => nameAlreadyExists = false,
+                  onChanged: (value) => checkSpellNameExists(
+                      value.trim().toLowerCase().toUpperCase().toLowerCase()),
                 ),
                 const SizedBox(height: 30.0),
                 TextFormField(
@@ -219,13 +221,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void checkSpellNameExists(String name) {
     DatabaseService().doesSpellWithNameExist(name).then(
       (value) {
-        if (value) {
-          setState(() {
-            nameAlreadyExists = value;
-          });
-        } else {
+        setState(() {
           nameAlreadyExists = value;
-        }
+        });
       },
     );
   }
@@ -237,6 +235,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     var jsonMap = {
       'name': nameController.text.trim(),
+      'nameInsensative':
+          nameController.text.trim().toLowerCase().toUpperCase().toLowerCase(),
       'description': descriptionController.text.trim(),
       'createdDate': Timestamp.now(),
       'tags': tagMap

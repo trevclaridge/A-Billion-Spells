@@ -38,12 +38,16 @@ class DatabaseService {
   }
 
   Future<bool> doesSpellWithNameExist(String name) async {
-    final QuerySnapshot result = await _firestoreInstance
+    bool result = false;
+    await _firestoreInstance
         .collection(spellsCollectionReference)
-        .where('name', isEqualTo: name)
-        .limit(1)
-        .get();
-    final List<DocumentSnapshot> documents = result.docs;
-    return documents.length == 1;
+        .where('nameInsensative', isEqualTo: name)
+        .get()
+        .then((value) {
+      if (value.size >= 1) {
+        result = true;
+      }
+    });
+    return result;
   }
 }
