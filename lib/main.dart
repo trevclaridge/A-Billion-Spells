@@ -48,6 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  bool nameAlreadyExists = false;
 
   @override
   Widget build(BuildContext context) {
@@ -157,8 +158,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a name for the spell!';
                     }
+                    checkSpellNameExists(value);
+                    if (nameAlreadyExists) {
+                      return 'A spell with this name already exists!';
+                    }
                     return null;
                   },
+                  onChanged: (value) => nameAlreadyExists = false,
                 ),
                 const SizedBox(height: 30.0),
                 TextFormField(
@@ -207,6 +213,20 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
+    );
+  }
+
+  void checkSpellNameExists(String name) {
+    DatabaseService().doesSpellWithNameExist(name).then(
+      (value) {
+        if (value) {
+          setState(() {
+            nameAlreadyExists = value;
+          });
+        } else {
+          nameAlreadyExists = value;
+        }
+      },
     );
   }
 
